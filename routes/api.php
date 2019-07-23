@@ -19,3 +19,6 @@ Route::post('register', 'API\UserController@register');
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('details', 'API\UserController@details');
 });
+
+Route::apiResource('books', 'BookController');
+Route::post('books/{book}/ratings', 'RatingController@store');
