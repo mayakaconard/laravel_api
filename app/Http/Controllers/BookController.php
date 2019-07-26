@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Book;
 use App\Http\Resources\BookResource;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -17,7 +18,7 @@ class BookController extends Controller
     {
         $this->middleware('auth:api')->except(['index', 'show']);
     }
-    
+
     public function index()
     {
         return BookResource::collection(Book::with('ratings')->paginate(25));
@@ -25,8 +26,11 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+
+        $id = Auth::user()->id;
+        return $id;
         $book = Book::create([
-            'user_id' => $request->user()->id,
+            'user_id' => $id,
             'title' => $request->title,
             'description' => $request->description,
         ]);

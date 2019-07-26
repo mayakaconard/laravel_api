@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
@@ -37,13 +38,22 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
-            'c_password' => 'required|same:password',
+
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
         }
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
+
+        $input = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'api_token' => Str::random(60)
+
+        ];
+
+        //  $input = $request->all();
+        // $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $success['name'] =  $user->name;
         $success['email'] =  $user->email;
